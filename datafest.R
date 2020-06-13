@@ -39,7 +39,8 @@ server <- function(input, output, session) {
     #quakes[positions$mag >= -1000 & positions$mag <= 1000,]
     #positions[1:length(positions)]
     getPositions()
-  })
+  
+~  })
   
   # This reactive expression represents the palette function,
   # which changes as the user makes selections in UI.
