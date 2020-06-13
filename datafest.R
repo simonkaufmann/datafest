@@ -17,7 +17,7 @@ ui <- bootstrapPage(
   tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
   leafletOutput("map", width = "100%", height = "100%"),
   absolutePanel(top = 10, right = 10,
-                sliderInput("range", "Time", 0, 10, value=c(0,10), step = 0.1),
+                sliderInput("Date", "Time:", min = as.Date("2019-09-01", "%Y-%m-%d"), max = as.Date("2020-05-25", "%Y-%m-%d"),value=as.Date("2016-12-01"), timeFormat="%Y-%m-%d"),
                 #selectInput("colors", "Color Scheme",
                             #rownames(subset(brewer.pal.info, category %in% c("seq", "div")))
                 #),
@@ -26,7 +26,7 @@ ui <- bootstrapPage(
 )
 
 # Scotland, London, Wales, North England, Midlands, South
-positions <- data.frame(lat=c(56.8648, 51.467339, 52.499, 54.6208, 53.16275, 51.013329), long=c(-4.388, -0.110214, -3.8987, -2.311, -1.2526, -2.80393), mag=c(40, 100, 50, 45, 33, 29))
+positions <- data.frame(lat = c(56.8648, 51.467339, 52.499, 54.6208, 53.16275, 51.013329), long = c(-4.388, -0.110214, -3.8987, -2.311, -1.2526, -2.80393), mag = c(40, 100, 50, 45, 33, 29))
 
 getPositions <- function() {
   return(positions)
