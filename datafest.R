@@ -53,6 +53,7 @@ server <- function(input, output, session) {
     leaflet(positions) %>% addTiles() %>%
       fitBounds(~min(long), ~min(lat), ~max(long), ~max(lat))
   })
+  # A comment
   
   # Incremental changes to the map (in this case, replacing the
   # circles when a new color is chosen) should be performed in
