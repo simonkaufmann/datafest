@@ -15,10 +15,11 @@ scotland <- csvdata$ScotlandA
 
 ui <- bootstrapPage(
   tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
+  titlePanel(" Percentage of the UK electorate that \"Approve\" of the UK government's record to date (by region) from June 2019 to May 2020, showing the impact of COVID-19"),
   leafletOutput("map", width = "100%", height = "100%"),
-  absolutePanel(top = 10, right = 10,
-                sliderInput("Date", "Time:", min = as.Date("2019-09-01", "%Y-%m-%d"), max = as.Date("2020-05-25", "%Y-%m-%d"),value=as.Date("2016-12-01"), timeFormat="%Y-%m-%d"),
-                checkboxInput("legend", "Show legend", TRUE)
+  absolutePanel(top = 200, left = 30,
+                sliderInput("Date", "Date:", min = as.Date("2019-09-01", "%Y-%m-%d"), max = as.Date("2020-05-25", "%Y-%m-%d"),value=as.Date("2020-03-01"), timeFormat="%Y-%m-%d"),
+                checkboxInput("legend", "Show legend", TRUE),
   )
 )
 
@@ -64,7 +65,7 @@ server <- function(input, output, session) {
     # won't need to change dynamically (at least, not unless the
     # entire map is being torn down and recreated).
     leaflet(positions) %>% addTiles() %>%
-      fitBounds(~min(long), ~min(lat), ~max(long), ~max(lat))
+      fitBounds(~min(long)-1, ~min(lat)-1, ~max(long)+1, ~max(lat)+1)
   })
 
   # Incremental changes to the map (in this case, replacing the
@@ -76,7 +77,7 @@ server <- function(input, output, session) {
     
     leafletProxy("map", data = filteredData()) %>%
       clearShapes() %>%
-      addCircles(radius = ~1000*mag, weight = 1, color = "#777777",
+      addCircles(radius = ~1500*mag, weight = 1, color = "#777777",
                  fillColor = ~pal(mag), fillOpacity = 0.7, popup = ~paste(mag)
       )
   })
