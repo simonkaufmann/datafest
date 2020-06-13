@@ -11,20 +11,13 @@ midlands <- csvdata$MidlandsA
 north <- csvdata$NorthA
 wales <- csvdata$WalesA
 south <- csvdata$RestOfSouthA
-
-
-
-
-
+scotland <- csvdata$ScotlandA
 
 ui <- bootstrapPage(
   tags$style(type = "text/css", "html, body {width:100%;height:100%}"),
   leafletOutput("map", width = "100%", height = "100%"),
   absolutePanel(top = 10, right = 10,
                 sliderInput("Date", "Time:", min = as.Date("2019-09-01", "%Y-%m-%d"), max = as.Date("2020-05-25", "%Y-%m-%d"),value=as.Date("2016-12-01"), timeFormat="%Y-%m-%d"),
-                #selectInput("colors", "Color Scheme",
-                            #rownames(subset(brewer.pal.info, category %in% c("seq", "div")))
-                #),
                 checkboxInput("legend", "Show legend", TRUE)
   )
 )
@@ -32,14 +25,23 @@ ui <- bootstrapPage(
 # Scotland, London, Wales, North England, Midlands, South
 positions <- data.frame(lat = c(56.8648, 51.467339, 52.499, 54.6208, 53.16275, 51.013329), long = c(-4.388, -0.110214, -3.8987, -2.311, -1.2526, -2.80393), mag = c(40, 100, 50, 45, 33, 29))
 
-getPositions <- function() {
-  return(positions)
-}
-
-getData <- function(date) {
-  print("Hallo")
-  print(date)
-  print(class(date))
+getData <- function(selectedDate) {
+  print("selected date")
+  print(selectedDate)
+  for (i in 2:length(date)) {
+    
+    end <- length(date)
+    positions$mag <- c(scotland[end], london[end], wales[end], north[end], midlands[end], south[end])
+    
+    if (selectedDate < as.Date(date[i])) {
+      print("i")
+      print(i)
+      print(date[i])
+      positions$mag <- c(scotland[i-1], london[i-1], wales[i-1], north[i-1], midlands[i-1], south[i-1])
+      break 
+    }
+  }
+  print(positions$mag)
   return(positions)
 }
 
@@ -64,8 +66,7 @@ server <- function(input, output, session) {
     leaflet(positions) %>% addTiles() %>%
       fitBounds(~min(long), ~min(lat), ~max(long), ~max(lat))
   })
-  # A comment
-  
+
   # Incremental changes to the map (in this case, replacing the
   # circles when a new color is chosen) should be performed in
   # an observer. Each independent set of things that can change
@@ -97,82 +98,3 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-ui <- dashboardPage(
-  dashboardHeader(title = "Basic dashboard"),
-  dashboardSidebar(),
-  dashboardBody(
-    # Boxes need to be put in a row (or column)
-    fluidRow(
-      box(plotOutput("plot1", height = 250)),
-      
-      box(
-        title = "Controls",
-        sliderInput("slider", "Number of observations:", 1, 100, 50)
-      )
-    )
-  )
-)
-
-server <- function(input, output) {
-  set.seed(122)
-  histdata <- rnorm(500)
-  
-  output$plot1 <- renderPlot({
-    data <- histdata[seq_len(input$slider)]
-    hist(data)
-  })
-}
-
-shinyApp(ui, server)
-
-## Sidebar content
-dashboardSidebar(
-  sidebarMenu(
-    menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-    menuItem("Widgets", tabName = "widgets", icon = icon("th"))
-  )
-)
-## Body content
-dashboardBody(
-  tabItems(
-    # First tab content
-    tabItem(tabName = "dashboard",
-            fluidRow(
-              box(plotOutput("plot1", height = 250)),
-              
-              box(
-                title = "Controls",
-                sliderInput("slider", "Number of observations:", 1, 100, 50)
-              )
-            )
-    ),
-    
-    # Second tab content
-    tabItem(tabName = "widgets",
-            h2("Widgets tab content")
-    )
-  )
-)
-
-getwd()
-print(datafestdata.txt$London)
-read.delim("datafestdata.txt", header=TRUE)
-
