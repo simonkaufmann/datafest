@@ -18,14 +18,15 @@ ui <- bootstrapPage(
   leafletOutput("map", width = "100%", height = "100%"),
   absolutePanel(top = 10, right = 10,
                 sliderInput("range", "Time", 0, 10, value=c(0,10), step = 0.1),
-                selectInput("colors", "Color Scheme",
-                            rownames(subset(brewer.pal.info, category %in% c("seq", "div")))
-                ),
+                #selectInput("colors", "Color Scheme",
+                            #rownames(subset(brewer.pal.info, category %in% c("seq", "div")))
+                #),
                 checkboxInput("legend", "Show legend", TRUE)
   )
 )
 
-positions <- data.frame(lat=c(56.8648, 51.467339), long=c(-4.388, -0.110214), mag=c(4, 6))
+# Scotland, London, Wales, North England, Midlands, South
+positions <- data.frame(lat=c(56.8648, 51.467339, 52.499, 54.6208, 53.16275, 51.013329), long=c(-4.388, -0.110214, -3.8987, -2.311, -1.2526, -2.80393), mag=c(40, 100, 50, 45, 33, 29))
 
 getPositions <- function() {
   return(positions)
@@ -43,7 +44,8 @@ server <- function(input, output, session) {
   # This reactive expression represents the palette function,
   # which changes as the user makes selections in UI.
   colorpal <- reactive({
-    colorNumeric(input$colors, positions$mag)
+    #colorNumeric(input$colors, c(0,100))
+    colorNumeric("Greens", c(0,100))
   })
   
   output$map <- renderLeaflet({
@@ -64,7 +66,7 @@ server <- function(input, output, session) {
     
     leafletProxy("map", data = filteredData()) %>%
       clearShapes() %>%
-      addCircles(radius = ~10^mag/10, weight = 1, color = "#777777",
+      addCircles(radius = ~1000*mag, weight = 1, color = "#777777",
                  fillColor = ~pal(mag), fillOpacity = 0.7, popup = ~paste(mag)
       )
   })
@@ -79,7 +81,7 @@ server <- function(input, output, session) {
     if (input$legend) {
       pal <- colorpal()
       proxy %>% addLegend(position = "bottomright",
-                          pal = pal, values = ~mag
+                          pal = pal, values = c(0,100)
       )
     }
   })
