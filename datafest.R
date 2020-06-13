@@ -1,15 +1,19 @@
-library(readxl)
-Data_Fest <- read_excel("University/Data Fest.xlsx")
-
-
 library(shiny)
 library(shinydashboard)
 library(leaflet)
 library(RColorBrewer)
 
+csvdata <- read.csv('data_fest.csv')
 
-## app.R ##
-library(shinydashboard)
+date <- csvdata$EndDate
+london <- csvdata$LondonA
+midlands <- csvdata$MidlandsA
+north <- csvdata$NorthA
+wales <- csvdata$WalesA
+south <- csvdata$RestOfSouthA
+
+
+
 
 
 
@@ -32,15 +36,19 @@ getPositions <- function() {
   return(positions)
 }
 
+getData <- function(date) {
+  print("Hallo")
+  print(date)
+  print(class(date))
+  return(positions)
+}
+
 server <- function(input, output, session) {
   
   # Reactive expression for the data subsetted to what the user selected
   filteredData <- reactive({
-    #quakes[positions$mag >= -1000 & positions$mag <= 1000,]
-    #positions[1:length(positions)]
-    getPositions()
-  
-~  })
+    getData(input$Date)
+  })
   
   # This reactive expression represents the palette function,
   # which changes as the user makes selections in UI.
